@@ -3,20 +3,32 @@
 ## 1. Key Assumptions
 
 ### Monday.com as the system of record
+
 The solution assumes that Monday.com is the primary source of truth for business data. The prototype reads the Deals and Work Orders boards in read-only mode and does not modify Monday.com data.
 
 ### Two primary business datasets
+
 The prototype focuses on two datasets:
+
 - Deals — sales pipeline and opportunity information.
 - Work Orders — operational, billing, collection, and receivables information.
 
 These datasets were sufficient to answer the required founder-level business questions.
 
 ### Canonical data models
+
 Monday.com records are mapped into canonical `Deal` and `WorkOrder` models before analysis. This separates Monday-specific schemas from the business intelligence layer and makes the analytical logic independent of the source representation.
 
-### Deterministic query understanding
-The prototype uses a deterministic query-understanding layer rather than depending on an external LLM API. This was an intentional choice for reliability, reproducibility, and avoiding API-key dependency during evaluation.
+### Hybrid query understanding
+
+Natural language interpretation uses Groq when `GROQ_API_KEY` is configured. Groq receives only the user question and the allowed query vocabulary, and returns a structured query plan. The plan is validated by the existing Query Agent before the pipeline continues:
+
+Natural language interpretation → Groq
+Structured plan → validation
+Business data → Monday.com
+Calculations → deterministic BI Agent
+
+If Groq is unavailable, times out, or returns malformed or unsupported output, the existing deterministic query-understanding implementation is used as a fallback. This preserves reliability, avoids API-key dependency for baseline operation, and ensures the LLM never calculates metrics or sees Monday.com data.
 
 ---
 
@@ -27,6 +39,7 @@ The prototype uses a deterministic query-understanding layer rather than dependi
 The prototype uses rule-based intent classification and entity extraction.
 
 **Why:**
+
 - No external model/API dependency.
 - Predictable results.
 - Easier to test.
@@ -50,6 +63,7 @@ The assignment requires business intelligence and decision support, not operatio
 The UI prioritizes a small number of high-value metrics rather than exposing every available field.
 
 The goal is to answer questions such as:
+
 - How is the pipeline looking?
 - Which sector has the strongest pipeline?
 - What is outstanding in receivables?
@@ -72,6 +86,7 @@ A leadership update was interpreted as a concise executive-level summary combini
 The prototype therefore combines Deal and Work Order metrics for leadership-oriented questions and surfaces insights and risks rather than returning raw records.
 
 For example, a leadership update can highlight:
+
 - Total pipeline value
 - Weighted pipeline
 - Number of active deals
@@ -87,6 +102,7 @@ For example, a leadership update can highlight:
 The system was designed to tolerate incomplete or inconsistent source data.
 
 Examples include:
+
 - Missing numeric values
 - Missing dates
 - Empty Monday.com fields
@@ -103,10 +119,13 @@ This prevents source-data irregularities from directly causing failures in busin
 ## 5. What I Would Do Differently With More Time
 
 ### LLM-powered natural-language understanding
+
 Introduce an LLM behind the existing query-agent abstraction for more flexible questions while retaining deterministic validation.
 
 ### More advanced analytics
+
 Add:
+
 - Trend analysis
 - Period-over-period comparisons
 - Forecasting
@@ -117,7 +136,9 @@ Add:
 - Anomaly detection
 
 ### Richer visualizations
+
 Add charts for:
+
 - Pipeline by sector
 - Pipeline by stage
 - Monthly pipeline movement
@@ -126,9 +147,11 @@ Add charts for:
 - Work-order status
 
 ### Production observability
+
 Add structured logging, request tracing, performance metrics, and monitoring for the deployed application.
 
 ### Authentication and access control
+
 A production version would integrate authentication and role-based access control so that sensitive business information is only visible to authorized users.
 
 ---

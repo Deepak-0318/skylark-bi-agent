@@ -1,5 +1,8 @@
 from .schemas import FinalAnswer
-from .response import format_answer
+from .response import (
+    GroqResponseClient,
+    format_answer,
+)
 
 from skylark_bi.agents.query_agent import QueryUnderstandingService
 from skylark_bi.agents.bi_agent import BIAgentService
@@ -14,21 +17,46 @@ class OrchestratorService:
         bi_service=None,
         monday_service=None,
         resilience_service=None,
+        response_client=None,
     ):
-        self.query_service = query_service or QueryUnderstandingService()
-        self.bi_service = bi_service or BIAgentService()
-        self.monday_service = monday_service or MondayIntegrationService()
+        self.query_service = (
+            query_service or QueryUnderstandingService()
+        )
+
+        self.bi_service = (
+            bi_service or BIAgentService()
+        )
+
+        self.monday_service = (
+            monday_service or MondayIntegrationService()
+        )
+
         self.resilience_service = resilience_service
 
+        if response_client is not None:
+            self.response_client = response_client
+        else:
+            try:
+                self.response_client = (
+                    GroqResponseClient.from_environment()
+                )
+            except Exception:
+                self.response_client = None
+
     def answer(self, query: str) -> FinalAnswer:
+
         plan = self.query_service.understand(query)
 
         if plan.clarification_required:
             return FinalAnswer(
-                answer=plan.clarification_question
-                or "Could you clarify your question?",
+                answer=(
+                    plan.clarification_question
+                    or "Could you clarify your question?"
+                ),
                 clarification_required=True,
-                clarification_question=plan.clarification_question,
+                clarification_question=(
+                    plan.clarification_question
+                ),
             )
 
         try:
@@ -36,7 +64,9 @@ class OrchestratorService:
 
             if self.resilience_service:
                 deals = self._resilient_deals(deals)
-                work_orders = self._resilient_work_orders(work_orders)
+                work_orders = self._resilient_work_orders(
+                    work_orders
+                )
 
             result = self.bi_service.analyze(
                 plan,
@@ -44,8 +74,14 @@ class OrchestratorService:
                 work_orders=work_orders,
             )
 
+            answer = format_answer(
+                plan,
+                result,
+                llm_client=self.response_client,
+            )
+
             return FinalAnswer(
-                answer=format_answer(plan, result),
+                answer=answer,
                 headline_metrics=result.metrics,
                 insights=result.insights,
                 risks=result.risks,
@@ -53,7 +89,7 @@ class OrchestratorService:
                 data_quality=result.data_quality,
             )
 
-        except Exception:
+        except Exception as exc:
             return FinalAnswer(
                 answer=(
                     "I couldn't retrieve the business data right now. "
@@ -65,24 +101,40 @@ class OrchestratorService:
             )
 
     def _load_data(self):
-        service = self.monday_service
+        """
+        Load canonical business records from Monday.com.
 
-        deals = service.reader.read_board(
-            service.config.deals_board_id
-        ).items
+        Mapping happens inside MondayIntegrationService.
+        """
 
-        work_orders = service.reader.read_board(
-            service.config.work_orders_board_id
-        ).items
+        deals = self.monday_service.read_deals()
+
+        work_orders = (
+            self.monday_service.read_work_orders()
+        )
 
         return deals, work_orders
 
     def _resilient_deals(self, records):
-        if hasattr(self.resilience_service, "process_deals"):
-            return self.resilience_service.process_deals(records)
+
+        if hasattr(
+            self.resilience_service,
+            "process_deals",
+        ):
+            return self.resilience_service.process_deals(
+                records
+            )
+
         return records
 
     def _resilient_work_orders(self, records):
-        if hasattr(self.resilience_service, "process_work_orders"):
-            return self.resilience_service.process_work_orders(records)
+
+        if hasattr(
+            self.resilience_service,
+            "process_work_orders",
+        ):
+            return self.resilience_service.process_work_orders(
+                records
+            )
+
         return records

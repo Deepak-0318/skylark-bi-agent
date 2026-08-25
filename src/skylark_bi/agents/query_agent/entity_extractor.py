@@ -1,5 +1,4 @@
 import re
-from datetime import date
 
 
 SECTORS = {
@@ -14,38 +13,72 @@ SECTORS = {
 
 
 def extract_entities(query: str) -> dict:
-    q = query.lower()
+    q = query.lower().strip()
+    result: dict = {}
 
-    result = {}
+    # ---------------------------------------------------------
+    # Sector
+    # ---------------------------------------------------------
 
     for sector in SECTORS:
-        if sector in q:
+        if re.search(rf"\b{re.escape(sector)}\b", q):
             result["sector"] = sector.title()
             break
 
-    for status in ["won", "lost", "ongoing", "completed", "not started"]:
+    # ---------------------------------------------------------
+    # Status
+    # ---------------------------------------------------------
+
+    for status in [
+        "won",
+        "lost",
+        "ongoing",
+        "completed",
+        "not started",
+    ]:
         if status in q:
             result["status"] = status
+            break
+
+    # ---------------------------------------------------------
+    # Quarter
+    # ---------------------------------------------------------
 
     quarters = re.findall(r"\bq([1-4])\b", q)
+
     if quarters:
         result["quarter"] = int(quarters[0])
 
-    if "this quarter" in q:
-        result["relative_period"] = "this_quarter"
-    elif "last quarter" in q:
-        result["relative_period"] = "last_quarter"
-    elif "this month" in q:
-        result["relative_period"] = "this_month"
-    elif "last month" in q:
-        result["relative_period"] = "last_month"
-    elif "this year" in q:
-        result["relative_period"] = "this_year"
-    elif "last year" in q:
-        result["relative_period"] = "last_year"
+    # ---------------------------------------------------------
+    # Relative periods
+    # ---------------------------------------------------------
 
-    owner = re.search(r"\bowner[_\s-]?(\d+)\b", q)
+    relative_periods = {
+        "this quarter": "this_quarter",
+        "last quarter": "last_quarter",
+        "this month": "this_month",
+        "last month": "last_month",
+        "this year": "this_year",
+        "last year": "last_year",
+    }
+
+    for phrase, value in relative_periods.items():
+        if phrase in q:
+            result["relative_period"] = value
+            break
+
+    # ---------------------------------------------------------
+    # Owner
+    # ---------------------------------------------------------
+
+    owner = re.search(
+        r"\bowner[_\s-]?(\d+)\b",
+        q,
+    )
+
     if owner:
-        result["owner_code"] = f"OWNER_{int(owner.group(1)):03d}"
+        result["owner_code"] = (
+            f"OWNER_{int(owner.group(1)):03d}"
+        )
 
     return result

@@ -34,6 +34,10 @@ Skylark BI Agent provides a natural-language interface for questions such as:
 - Give me a leadership update.
 - What should leadership be concerned about?
 
+## LLM Query Understanding
+
+When `GROQ_API_KEY` is configured, Groq interprets natural-language questions into a validated structured query plan only. Business data is never sent to Groq, and all calculations remain deterministic in the BI Agent. If Groq is unavailable or returns an invalid plan, the system falls back to deterministic query understanding. `GROQ_API_KEY` is required only for LLM mode.
+
 Instead of returning raw records, the system converts the available operational data into:
 
 - Metrics
@@ -929,3 +933,4 @@ https://github.com/Deepak-0318/skylark-bi-agent
 Live Prototype:
 
 https://skylark-bi-agent-01.streamlit.app
+```

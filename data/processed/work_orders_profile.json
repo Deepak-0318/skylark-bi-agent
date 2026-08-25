@@ -1,0 +1,701 @@
+{
+  "dataset": "Work Orders",
+  "record_count": 176,
+  "column_count": 38,
+  "columns": [
+    {
+      "name": "Deal name masked",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 176,
+      "non_null_count": 175,
+      "null_count": 1,
+      "null_percentage": 0.57,
+      "unique_count": 58,
+      "sample_values": [
+        "Scooby-Doo",
+        "Appa",
+        "Sakura",
+        "Sakura",
+        "SpongeBob"
+      ]
+    },
+    {
+      "name": "Customer Name Code",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 51,
+      "sample_values": [
+        "WOCOMPANY_002",
+        "WOCOMPANY_038",
+        "WOCOMPANY_002",
+        "WOCOMPANY_002",
+        "WOCOMPANY_032"
+      ]
+    },
+    {
+      "name": "Serial #",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 176,
+      "sample_values": [
+        "SDPLDEAL-075",
+        "SDPLDEAL-101",
+        "SDPLDEAL-002",
+        "SDPLDEAL-003",
+        "SDPLDEAL-004"
+      ]
+    },
+    {
+      "name": "Nature of Work",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 164,
+      "null_count": 12,
+      "null_percentage": 6.82,
+      "unique_count": 4,
+      "sample_values": [
+        "One time Project",
+        "Proof of Concept",
+        "Monthly Contract",
+        "One time Project",
+        "One time Project"
+      ]
+    },
+    {
+      "name": "Last executed month of recurring project",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 15,
+      "null_count": 161,
+      "null_percentage": 91.48,
+      "unique_count": 5,
+      "sample_values": [
+        "Dec",
+        "June",
+        "November",
+        "Dec",
+        "June"
+      ]
+    },
+    {
+      "name": "Execution Status",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 172,
+      "null_count": 4,
+      "null_percentage": 2.27,
+      "unique_count": 7,
+      "sample_values": [
+        "Completed",
+        "Not Started",
+        "Executed until current month",
+        "Completed",
+        "Completed"
+      ]
+    },
+    {
+      "name": "Data Delivery Date",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 176,
+      "non_null_count": 58,
+      "null_count": 118,
+      "null_percentage": 67.05,
+      "unique_count": 42,
+      "sample_values": [
+        "2025-09-27",
+        "2025-12-31",
+        "2025-05-28",
+        "2025-05-30",
+        "2025-06-10"
+      ]
+    },
+    {
+      "name": "Date of PO/LOI",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 176,
+      "non_null_count": 175,
+      "null_count": 1,
+      "null_percentage": 0.57,
+      "unique_count": 103,
+      "sample_values": [
+        "2025-10-29",
+        "2025-07-31",
+        "2025-05-16",
+        "2025-05-08",
+        "2025-05-06"
+      ]
+    },
+    {
+      "name": "Document Type",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 162,
+      "null_count": 14,
+      "null_percentage": 7.95,
+      "unique_count": 3,
+      "sample_values": [
+        "Purchase Order",
+        "Purchase Order",
+        "Purchase Order",
+        "Purchase Order",
+        "LOA/LOI"
+      ]
+    },
+    {
+      "name": "Probable Start Date",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 176,
+      "non_null_count": 158,
+      "null_count": 18,
+      "null_percentage": 10.23,
+      "unique_count": 87,
+      "sample_values": [
+        "2025-05-31",
+        "2025-08-11",
+        "2025-05-01",
+        "2025-05-20",
+        "2025-05-24"
+      ]
+    },
+    {
+      "name": "Probable End Date",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 176,
+      "non_null_count": 157,
+      "null_count": 19,
+      "null_percentage": 10.8,
+      "unique_count": 75,
+      "sample_values": [
+        "2025-06-03",
+        "2025-08-15",
+        "2026-04-30",
+        "2025-05-31",
+        "2025-06-20"
+      ]
+    },
+    {
+      "name": "BD/KAM Personnel code",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 165,
+      "null_count": 11,
+      "null_percentage": 6.25,
+      "unique_count": 7,
+      "sample_values": [
+        "OWNER_003",
+        "OWNER_002",
+        "OWNER_003",
+        "OWNER_003",
+        "OWNER_003"
+      ]
+    },
+    {
+      "name": "Sector",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 6,
+      "sample_values": [
+        "Mining",
+        "Powerline",
+        "Mining",
+        "Mining",
+        "Powerline"
+      ]
+    },
+    {
+      "name": "Type of Work",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 36,
+      "sample_values": [
+        "Raw images/videography",
+        "Powerline Inspection",
+        "Volumetric survey",
+        "Topography Survey: RGB",
+        "Powerline Inspection"
+      ]
+    },
+    {
+      "name": "Is any Skylark software platform part of the client deliverables in this deal?",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 164,
+      "null_count": 12,
+      "null_percentage": 6.82,
+      "unique_count": 4,
+      "sample_values": [
+        "NONE",
+        "NONE",
+        "NONE",
+        "NONE",
+        "NONE"
+      ]
+    },
+    {
+      "name": "Last invoice date",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 176,
+      "non_null_count": 87,
+      "null_count": 89,
+      "null_percentage": 50.57,
+      "unique_count": 44,
+      "sample_values": [
+        "2026-01-14",
+        "2025-09-15",
+        "2025-07-18",
+        "2025-09-06",
+        "2025-06-16"
+      ]
+    },
+    {
+      "name": "latest invoice no.",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 176,
+      "non_null_count": 88,
+      "null_count": 88,
+      "null_percentage": 50.0,
+      "unique_count": 86,
+      "sample_values": [
+        "SDPL/FY25-26/916",
+        "SDPL/FY25-26/449",
+        "SDPL/FY25-26/359",
+        "SDPL/FY25-26/431",
+        "SDPL/FY25-26/064"
+      ]
+    },
+    {
+      "name": "Amount in Rupees (Excl of GST) (Masked)",
+      "pandas_dtype": "object",
+      "inferred_type": "numeric_candidate",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 146,
+      "sample_values": [
+        "264398.08",
+        "154150",
+        "2984097.36",
+        "184980",
+        "1132250.248"
+      ],
+      "numeric_statistics": {
+        "min": 0.0,
+        "max": 57487090.49,
+        "mean": 1209425.1954746288,
+        "median": 308300.0
+      }
+    },
+    {
+      "name": "Amount in Rupees (Incl of GST) (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 145,
+      "sample_values": [
+        "311989.7344",
+        "181897.0",
+        "3521234.885",
+        "218276.4",
+        "1336055.293"
+      ],
+      "numeric_statistics": {
+        "min": 0.0,
+        "max": 67834766.78,
+        "mean": 1419013.0844806477,
+        "median": 363794.0
+      }
+    },
+    {
+      "name": "Billed Value in Rupees (Excl of GST.) (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 113,
+      "null_count": 63,
+      "null_percentage": 35.8,
+      "unique_count": 100,
+      "sample_values": [
+        "23959.68248",
+        "184980.0",
+        "1215157.544",
+        "135652.0",
+        "3662604.0"
+      ],
+      "numeric_statistics": {
+        "min": 12774.7188,
+        "max": 57487090.49,
+        "mean": 950352.0051906195,
+        "median": 277470.0
+      }
+    },
+    {
+      "name": "Billed Value in Rupees (Incl of GST.) (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 101,
+      "sample_values": [
+        "0.0",
+        "0.0",
+        "28272.42533",
+        "218276.4",
+        "1433885.902"
+      ],
+      "numeric_statistics": {
+        "min": 0.0,
+        "max": 67834766.78,
+        "mean": 719999.6384876706,
+        "median": 165361.8351
+      }
+    },
+    {
+      "name": "Collected Amount in Rupees (Incl of GST.) (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 78,
+      "null_count": 98,
+      "null_percentage": 55.68,
+      "unique_count": 76,
+      "sample_values": [
+        "66880.1356",
+        "160069.36",
+        "1405108.08",
+        "178672.182",
+        "1225606.682"
+      ],
+      "numeric_statistics": {
+        "min": 2467.6332,
+        "max": 57487090.49,
+        "mean": 1159335.737228718,
+        "median": 286108.51665
+      }
+    },
+    {
+      "name": "Amount to be billed in Rs. (Exl. of GST) (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 99,
+      "sample_values": [
+        "264398.08",
+        "154150.0",
+        "2960137.678",
+        "0.0",
+        "-82907.29608"
+      ],
+      "numeric_statistics": {
+        "min": -82907.29608,
+        "max": 14144804.0,
+        "mean": 592384.2762627954,
+        "median": 5871.8818
+      }
+    },
+    {
+      "name": "Amount to be billed in Rs. (Incl. of GST) (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 99,
+      "sample_values": [
+        "311989.7344",
+        "181897.0",
+        "3492962.459",
+        "0.0",
+        "-97830.60937"
+      ],
+      "numeric_statistics": {
+        "min": -97830.60937,
+        "max": 16690868.72,
+        "mean": 699013.4459867884,
+        "median": 6928.820524
+      }
+    },
+    {
+      "name": "Amount Receivable (Masked)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 176,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 96,
+      "sample_values": [
+        "0.0",
+        "0.0",
+        "28272.42533",
+        "151396.2644",
+        "1433885.902"
+      ],
+      "numeric_statistics": {
+        "min": -160.2370752,
+        "max": 10347676.29,
+        "mean": 206203.11858762952,
+        "median": 0.05216436
+      }
+    },
+    {
+      "name": "AR Priority account",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 10,
+      "null_count": 166,
+      "null_percentage": 94.32,
+      "unique_count": 1,
+      "sample_values": [
+        "Priority",
+        "Priority",
+        "Priority",
+        "Priority",
+        "Priority"
+      ]
+    },
+    {
+      "name": "Quantity by Ops",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 43,
+      "null_count": 133,
+      "null_percentage": 75.57,
+      "unique_count": 43,
+      "sample_values": [
+        "447.170583",
+        "2424.42",
+        "629.83",
+        "3319.81",
+        "2125.654959"
+      ],
+      "numeric_statistics": {
+        "min": 49.494,
+        "max": 6539.578,
+        "mean": 1362.156106488372,
+        "median": 922.484
+      }
+    },
+    {
+      "name": "Quantities as per PO",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 176,
+      "non_null_count": 160,
+      "null_count": 16,
+      "null_percentage": 9.09,
+      "unique_count": 118,
+      "sample_values": [
+        "5360 HA",
+        "4",
+        "3000",
+        "600",
+        "59.33"
+      ],
+      "numeric_statistics": {
+        "min": 0.0,
+        "max": 150000.0,
+        "mean": 2348.4057303370787,
+        "median": 13.0
+      }
+    },
+    {
+      "name": "Quantity billed (till date)",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 23,
+      "null_count": 153,
+      "null_percentage": 86.93,
+      "unique_count": 17,
+      "sample_values": [
+        "1.0",
+        "2.0",
+        "1207.0",
+        "1.0",
+        "1.0"
+      ],
+      "numeric_statistics": {
+        "min": 1.0,
+        "max": 3956.0,
+        "mean": 615.366347826087,
+        "median": 345.0
+      }
+    },
+    {
+      "name": "Balance in quantity",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 176,
+      "non_null_count": 157,
+      "null_count": 19,
+      "null_percentage": 10.8,
+      "unique_count": 95,
+      "sample_values": [
+        "5360.0",
+        "4.0",
+        "3000.0",
+        "600.0",
+        "59.33"
+      ],
+      "numeric_statistics": {
+        "min": -1309.85,
+        "max": 150000.0,
+        "mean": 2172.2027643312103,
+        "median": 45.0
+      }
+    },
+    {
+      "name": "Invoice Status",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 112,
+      "null_count": 64,
+      "null_percentage": 36.36,
+      "unique_count": 6,
+      "sample_values": [
+        "Not billed yet",
+        "Fully Billed",
+        "Partially Billed",
+        "Partially Billed",
+        "Partially Billed"
+      ]
+    },
+    {
+      "name": "Expected Billing Month",
+      "pandas_dtype": "float64",
+      "inferred_type": "empty",
+      "record_count": 176,
+      "non_null_count": 0,
+      "null_count": 176,
+      "null_percentage": 100.0,
+      "unique_count": 0,
+      "sample_values": []
+    },
+    {
+      "name": "Actual Billing Month",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 70,
+      "null_count": 106,
+      "null_percentage": 60.23,
+      "unique_count": 7,
+      "sample_values": [
+        "July",
+        "August",
+        "June",
+        "August",
+        "July"
+      ]
+    },
+    {
+      "name": "Actual Collection Month",
+      "pandas_dtype": "float64",
+      "inferred_type": "empty",
+      "record_count": 176,
+      "non_null_count": 0,
+      "null_count": 176,
+      "null_percentage": 100.0,
+      "unique_count": 0,
+      "sample_values": []
+    },
+    {
+      "name": "WO Status (billed)",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 102,
+      "null_count": 74,
+      "null_percentage": 42.05,
+      "unique_count": 2,
+      "sample_values": [
+        "Open",
+        "Open",
+        "Open",
+        "Open",
+        "Closed"
+      ]
+    },
+    {
+      "name": "Collection status",
+      "pandas_dtype": "float64",
+      "inferred_type": "empty",
+      "record_count": 176,
+      "non_null_count": 0,
+      "null_count": 176,
+      "null_percentage": 100.0,
+      "unique_count": 0,
+      "sample_values": []
+    },
+    {
+      "name": "Collection Date",
+      "pandas_dtype": "float64",
+      "inferred_type": "empty",
+      "record_count": 176,
+      "non_null_count": 0,
+      "null_count": 176,
+      "null_percentage": 100.0,
+      "unique_count": 0,
+      "sample_values": []
+    },
+    {
+      "name": "Billing Status",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 176,
+      "non_null_count": 28,
+      "null_count": 148,
+      "null_percentage": 84.09,
+      "unique_count": 5,
+      "sample_values": [
+        "Update Required",
+        "Partially Billed",
+        "BIlled",
+        "Not Billable",
+        "BIlled"
+      ]
+    }
+  ]
+}

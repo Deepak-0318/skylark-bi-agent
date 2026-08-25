@@ -1,0 +1,402 @@
+{
+  "deals": {
+    "dataset": "Deals",
+    "record_count": 346,
+    "column_count": 12,
+    "missing_values": [
+      {
+        "column": "Close Date (A)",
+        "null_count": 318,
+        "null_percentage": 91.91,
+        "severity": "critical"
+      },
+      {
+        "column": "Closure Probability",
+        "null_count": 258,
+        "null_percentage": 74.57,
+        "severity": "warning"
+      },
+      {
+        "column": "Masked Deal value",
+        "null_count": 181,
+        "null_percentage": 52.31,
+        "severity": "warning"
+      },
+      {
+        "column": "Product deal",
+        "null_count": 170,
+        "null_percentage": 49.13,
+        "severity": "warning"
+      },
+      {
+        "column": "Tentative Close Date",
+        "null_count": 74,
+        "null_percentage": 21.39,
+        "severity": "low"
+      },
+      {
+        "column": "Owner code",
+        "null_count": 17,
+        "null_percentage": 4.91,
+        "severity": "low"
+      },
+      {
+        "column": "Sector/service",
+        "null_count": 8,
+        "null_percentage": 2.31,
+        "severity": "low"
+      },
+      {
+        "column": "Deal Name",
+        "null_count": 2,
+        "null_percentage": 0.58,
+        "severity": "low"
+      },
+      {
+        "column": "Client Code",
+        "null_count": 2,
+        "null_percentage": 0.58,
+        "severity": "low"
+      },
+      {
+        "column": "Deal Status",
+        "null_count": 1,
+        "null_percentage": 0.29,
+        "severity": "low"
+      },
+      {
+        "column": "Created Date",
+        "null_count": 1,
+        "null_percentage": 0.29,
+        "severity": "low"
+      },
+      {
+        "column": "Deal Stage",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      }
+    ],
+    "empty_columns": [],
+    "duplicates": {
+      "duplicate_rows": 20,
+      "duplicate_groups": 12,
+      "duplicate_percentage": 5.78
+    },
+    "constant_columns": [],
+    "near_constant_columns": [],
+    "identifier_candidates": [],
+    "summary": {
+      "critical_missing_fields": 1,
+      "warning_missing_fields": 3,
+      "empty_columns": 0,
+      "duplicate_rows": 20
+    }
+  },
+  "work_orders": {
+    "dataset": "Work Orders",
+    "record_count": 176,
+    "column_count": 38,
+    "missing_values": [
+      {
+        "column": "Expected Billing Month",
+        "null_count": 176,
+        "null_percentage": 100.0,
+        "severity": "critical"
+      },
+      {
+        "column": "Actual Collection Month",
+        "null_count": 176,
+        "null_percentage": 100.0,
+        "severity": "critical"
+      },
+      {
+        "column": "Collection status",
+        "null_count": 176,
+        "null_percentage": 100.0,
+        "severity": "critical"
+      },
+      {
+        "column": "Collection Date",
+        "null_count": 176,
+        "null_percentage": 100.0,
+        "severity": "critical"
+      },
+      {
+        "column": "AR Priority account",
+        "null_count": 166,
+        "null_percentage": 94.32,
+        "severity": "critical"
+      },
+      {
+        "column": "Last executed month of recurring project",
+        "null_count": 161,
+        "null_percentage": 91.48,
+        "severity": "critical"
+      },
+      {
+        "column": "Quantity billed (till date)",
+        "null_count": 153,
+        "null_percentage": 86.93,
+        "severity": "critical"
+      },
+      {
+        "column": "Billing Status",
+        "null_count": 148,
+        "null_percentage": 84.09,
+        "severity": "critical"
+      },
+      {
+        "column": "Quantity by Ops",
+        "null_count": 133,
+        "null_percentage": 75.57,
+        "severity": "warning"
+      },
+      {
+        "column": "Data Delivery Date",
+        "null_count": 118,
+        "null_percentage": 67.05,
+        "severity": "warning"
+      },
+      {
+        "column": "Actual Billing Month",
+        "null_count": 106,
+        "null_percentage": 60.23,
+        "severity": "warning"
+      },
+      {
+        "column": "Collected Amount in Rupees (Incl of GST.) (Masked)",
+        "null_count": 98,
+        "null_percentage": 55.68,
+        "severity": "warning"
+      },
+      {
+        "column": "Last invoice date",
+        "null_count": 89,
+        "null_percentage": 50.57,
+        "severity": "warning"
+      },
+      {
+        "column": "latest invoice no.",
+        "null_count": 88,
+        "null_percentage": 50.0,
+        "severity": "warning"
+      },
+      {
+        "column": "WO Status (billed)",
+        "null_count": 74,
+        "null_percentage": 42.05,
+        "severity": "warning"
+      },
+      {
+        "column": "Invoice Status",
+        "null_count": 64,
+        "null_percentage": 36.36,
+        "severity": "warning"
+      },
+      {
+        "column": "Billed Value in Rupees (Excl of GST.) (Masked)",
+        "null_count": 63,
+        "null_percentage": 35.8,
+        "severity": "warning"
+      },
+      {
+        "column": "Probable End Date",
+        "null_count": 19,
+        "null_percentage": 10.8,
+        "severity": "low"
+      },
+      {
+        "column": "Balance in quantity",
+        "null_count": 19,
+        "null_percentage": 10.8,
+        "severity": "low"
+      },
+      {
+        "column": "Probable Start Date",
+        "null_count": 18,
+        "null_percentage": 10.23,
+        "severity": "low"
+      },
+      {
+        "column": "Quantities as per PO",
+        "null_count": 16,
+        "null_percentage": 9.09,
+        "severity": "low"
+      },
+      {
+        "column": "Document Type",
+        "null_count": 14,
+        "null_percentage": 7.95,
+        "severity": "low"
+      },
+      {
+        "column": "Nature of Work",
+        "null_count": 12,
+        "null_percentage": 6.82,
+        "severity": "low"
+      },
+      {
+        "column": "Is any Skylark software platform part of the client deliverables in this deal?",
+        "null_count": 12,
+        "null_percentage": 6.82,
+        "severity": "low"
+      },
+      {
+        "column": "BD/KAM Personnel code",
+        "null_count": 11,
+        "null_percentage": 6.25,
+        "severity": "low"
+      },
+      {
+        "column": "Execution Status",
+        "null_count": 4,
+        "null_percentage": 2.27,
+        "severity": "low"
+      },
+      {
+        "column": "Deal name masked",
+        "null_count": 1,
+        "null_percentage": 0.57,
+        "severity": "low"
+      },
+      {
+        "column": "Date of PO/LOI",
+        "null_count": 1,
+        "null_percentage": 0.57,
+        "severity": "low"
+      },
+      {
+        "column": "Customer Name Code",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Serial #",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Sector",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Type of Work",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Amount in Rupees (Excl of GST) (Masked)",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Amount in Rupees (Incl of GST) (Masked)",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Billed Value in Rupees (Incl of GST.) (Masked)",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Amount to be billed in Rs. (Exl. of GST) (Masked)",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Amount to be billed in Rs. (Incl. of GST) (Masked)",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      },
+      {
+        "column": "Amount Receivable (Masked)",
+        "null_count": 0,
+        "null_percentage": 0.0,
+        "severity": "none"
+      }
+    ],
+    "empty_columns": [
+      "Expected Billing Month",
+      "Actual Collection Month",
+      "Collection status",
+      "Collection Date"
+    ],
+    "duplicates": {
+      "duplicate_rows": 0,
+      "duplicate_groups": 0,
+      "duplicate_percentage": 0.0
+    },
+    "constant_columns": [
+      "Expected Billing Month",
+      "Actual Collection Month",
+      "Collection status",
+      "Collection Date"
+    ],
+    "near_constant_columns": [
+      {
+        "column": "Expected Billing Month",
+        "dominant_percentage": 100.0,
+        "dominant_value": "nan"
+      },
+      {
+        "column": "Actual Collection Month",
+        "dominant_percentage": 100.0,
+        "dominant_value": "nan"
+      },
+      {
+        "column": "Collection status",
+        "dominant_percentage": 100.0,
+        "dominant_value": "nan"
+      },
+      {
+        "column": "Collection Date",
+        "dominant_percentage": 100.0,
+        "dominant_value": "nan"
+      }
+    ],
+    "identifier_candidates": [
+      {
+        "column": "Serial #",
+        "unique_ratio": 1.0,
+        "unique_count": 176,
+        "non_null_count": 176
+      },
+      {
+        "column": "Quantity by Ops",
+        "unique_ratio": 1.0,
+        "unique_count": 43,
+        "non_null_count": 43
+      },
+      {
+        "column": "latest invoice no.",
+        "unique_ratio": 0.9773,
+        "unique_count": 86,
+        "non_null_count": 88
+      },
+      {
+        "column": "Collected Amount in Rupees (Incl of GST.) (Masked)",
+        "unique_ratio": 0.9744,
+        "unique_count": 76,
+        "non_null_count": 78
+      }
+    ],
+    "summary": {
+      "critical_missing_fields": 8,
+      "warning_missing_fields": 9,
+      "empty_columns": 4,
+      "duplicate_rows": 0
+    }
+  }
+}

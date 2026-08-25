@@ -1,0 +1,89 @@
+{
+  "source_datasets": [
+    "Deals",
+    "Work Orders"
+  ],
+  "relationships": [
+    {
+      "left_column": "Deal Name",
+      "right_column": "Deal name masked",
+      "left_unique_values": 155,
+      "right_unique_values": 58,
+      "overlap_count": 52,
+      "left_coverage_percentage": 33.55,
+      "right_coverage_percentage": 89.66,
+      "jaccard_similarity": 0.323,
+      "confidence": "high",
+      "recommendation": "Suitable candidate for cross-board matching.",
+      "sample_matches": [
+        "ace",
+        "alias_160",
+        "alias_162",
+        "alphonse",
+        "appa",
+        "armin",
+        "asuna",
+        "bentennyson",
+        "bugsbunny",
+        "bulbasaur"
+      ],
+      "relationship_type": "candidate_key"
+    },
+    {
+      "left_column": "Client Code",
+      "right_column": "Customer Name Code",
+      "left_unique_values": 199,
+      "right_unique_values": 51,
+      "overlap_count": 0,
+      "left_coverage_percentage": 0.0,
+      "right_coverage_percentage": 0.0,
+      "jaccard_similarity": 0.0,
+      "confidence": "none",
+      "recommendation": "Do not use as a cross-board join key.",
+      "sample_matches": [],
+      "relationship_type": "candidate_key"
+    },
+    {
+      "left_column": "Owner code",
+      "right_column": "BD/KAM Personnel code",
+      "left_unique_values": 7,
+      "right_unique_values": 7,
+      "overlap_count": 6,
+      "left_coverage_percentage": 85.71,
+      "right_coverage_percentage": 85.71,
+      "jaccard_similarity": 0.75,
+      "confidence": "high",
+      "recommendation": "Suitable candidate for cross-board matching.",
+      "sample_matches": [
+        "owner_001",
+        "owner_002",
+        "owner_003",
+        "owner_004",
+        "owner_005",
+        "owner_006"
+      ],
+      "relationship_type": "candidate_dimension"
+    },
+    {
+      "left_column": "Sector/service",
+      "right_column": "Sector",
+      "left_unique_values": 12,
+      "right_unique_values": 6,
+      "overlap_count": 6,
+      "left_coverage_percentage": 50.0,
+      "right_coverage_percentage": 100.0,
+      "jaccard_similarity": 0.5,
+      "confidence": "high",
+      "recommendation": "Suitable candidate for cross-board matching.",
+      "sample_matches": [
+        "construction",
+        "mining",
+        "others",
+        "powerline",
+        "railways",
+        "renewables"
+      ],
+      "relationship_type": "analytical_dimension"
+    }
+  ]
+}

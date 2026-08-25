@@ -1,0 +1,217 @@
+{
+  "dataset": "Deals",
+  "record_count": 346,
+  "column_count": 12,
+  "columns": [
+    {
+      "name": "Deal Name",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 346,
+      "non_null_count": 344,
+      "null_count": 2,
+      "null_percentage": 0.58,
+      "unique_count": 155,
+      "sample_values": [
+        "Naruto",
+        "Sasuke",
+        "Sasuke",
+        "Sakura",
+        "Sakura"
+      ]
+    },
+    {
+      "name": "Owner code",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 346,
+      "non_null_count": 329,
+      "null_count": 17,
+      "null_percentage": 4.91,
+      "unique_count": 7,
+      "sample_values": [
+        "OWNER_001",
+        "OWNER_001",
+        "OWNER_002",
+        "OWNER_002",
+        "OWNER_002"
+      ]
+    },
+    {
+      "name": "Client Code",
+      "pandas_dtype": "object",
+      "inferred_type": "text",
+      "record_count": 346,
+      "non_null_count": 344,
+      "null_count": 2,
+      "null_percentage": 0.58,
+      "unique_count": 199,
+      "sample_values": [
+        "COMPANY089",
+        "COMPANY091",
+        "COMPANY124",
+        "COMPANY046",
+        "COMPANY148"
+      ]
+    },
+    {
+      "name": "Deal Status",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 346,
+      "non_null_count": 345,
+      "null_count": 1,
+      "null_percentage": 0.29,
+      "unique_count": 5,
+      "sample_values": [
+        "Open",
+        "Open",
+        "Open",
+        "Open",
+        "Open"
+      ]
+    },
+    {
+      "name": "Close Date (A)",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 346,
+      "non_null_count": 28,
+      "null_count": 318,
+      "null_percentage": 91.91,
+      "unique_count": 18,
+      "sample_values": [
+        "Close Date (A)",
+        "Close Date (A)",
+        "2025-07-31",
+        "2025-01-06",
+        "2024-12-31"
+      ]
+    },
+    {
+      "name": "Closure Probability",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 346,
+      "non_null_count": 88,
+      "null_count": 258,
+      "null_percentage": 74.57,
+      "unique_count": 4,
+      "sample_values": [
+        "High",
+        "Medium",
+        "Low",
+        "High",
+        "Medium"
+      ]
+    },
+    {
+      "name": "Masked Deal value",
+      "pandas_dtype": "float64",
+      "inferred_type": "numeric",
+      "record_count": 346,
+      "non_null_count": 165,
+      "null_count": 181,
+      "null_percentage": 52.31,
+      "unique_count": 103,
+      "sample_values": [
+        "489360.0",
+        "17616960.0",
+        "611700.0",
+        "2348928.0",
+        "428190.0"
+      ],
+      "numeric_statistics": {
+        "min": 51440.2998,
+        "max": 751473450.0,
+        "mean": 13972836.611598182,
+        "median": 1101060.0
+      }
+    },
+    {
+      "name": "Tentative Close Date",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 346,
+      "non_null_count": 272,
+      "null_count": 74,
+      "null_percentage": 21.39,
+      "unique_count": 79,
+      "sample_values": [
+        "2026-02-26",
+        "2026-02-28",
+        "2026-02-26",
+        "2026-03-20",
+        "2026-02-26"
+      ]
+    },
+    {
+      "name": "Deal Stage",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 346,
+      "non_null_count": 346,
+      "null_count": 0,
+      "null_percentage": 0.0,
+      "unique_count": 17,
+      "sample_values": [
+        "B. Sales Qualified Leads",
+        "B. Sales Qualified Leads",
+        "E. Proposal/Commercials Sent",
+        "E. Proposal/Commercials Sent",
+        "E. Proposal/Commercials Sent"
+      ]
+    },
+    {
+      "name": "Product deal",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 346,
+      "non_null_count": 176,
+      "null_count": 170,
+      "null_percentage": 49.13,
+      "unique_count": 10,
+      "sample_values": [
+        "Service + Spectra",
+        "Pure Service",
+        "Spectra + DMO",
+        "Hardware",
+        "Pure Service"
+      ]
+    },
+    {
+      "name": "Sector/service",
+      "pandas_dtype": "object",
+      "inferred_type": "categorical",
+      "record_count": 346,
+      "non_null_count": 338,
+      "null_count": 8,
+      "null_percentage": 2.31,
+      "unique_count": 12,
+      "sample_values": [
+        "Mining",
+        "Mining",
+        "Powerline",
+        "Powerline",
+        "Powerline"
+      ]
+    },
+    {
+      "name": "Created Date",
+      "pandas_dtype": "object",
+      "inferred_type": "datetime_candidate",
+      "record_count": 346,
+      "non_null_count": 345,
+      "null_count": 1,
+      "null_percentage": 0.29,
+      "unique_count": 84,
+      "sample_values": [
+        "2025-12-26",
+        "2025-09-15",
+        "2025-11-12",
+        "2025-10-14",
+        "2025-10-10"
+      ]
+    }
+  ]
+}

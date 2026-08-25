@@ -1,167 +1,329 @@
 # Skylark BI Agent — Decision Log
 
-## 1. Key Assumptions
+## 1. Overview
 
-### Monday.com as the system of record
+Skylark BI Agent is a read-only, agentic business intelligence prototype designed to provide founder-level insights from Monday.com business data.
 
-The solution assumes that Monday.com is the primary source of truth for business data. The prototype reads the Deals and Work Orders boards in read-only mode and does not modify Monday.com data.
+The system connects dynamically to two Monday.com boards:
+
+- Deals
+- Work Orders
+
+Users interact with the system using natural-language business questions. A query-understanding layer converts the question into a structured query plan, business calculations are performed deterministically, and the final response presents metrics, insights, risks, and caveats.
+
+---
+
+## 2. Key Assumptions
+
+### Monday.com is the system of record
+
+The prototype assumes Monday.com is the primary source of truth for the business data.
+
+The application dynamically retrieves data from Monday.com using its API and operates in read-only mode.
+
+No business dataset is hardcoded into the application.
 
 ### Two primary business datasets
 
-The prototype focuses on two datasets:
+The prototype focuses on:
 
-- Deals — sales pipeline and opportunity information.
-- Work Orders — operational, billing, collection, and receivables information.
+- **Deals** — sales opportunities, pipeline value, probability, stages, sectors, and ownership.
+- **Work Orders** — operational execution, billing, collections, receivables, and work-order information.
 
-These datasets were sufficient to answer the required founder-level business questions.
+These two datasets provide sufficient coverage for the required founder-level business questions.
 
-### Canonical data models
+### Canonical business models
 
-Monday.com records are mapped into canonical `Deal` and `WorkOrder` models before analysis. This separates Monday-specific schemas from the business intelligence layer and makes the analytical logic independent of the source representation.
+Monday.com records are mapped into canonical:
 
-### Hybrid query understanding
+- `Deal`
+- `WorkOrder`
 
-Natural language interpretation uses Groq when `GROQ_API_KEY` is configured. Groq receives only the user question and the allowed query vocabulary, and returns a structured query plan. The plan is validated by the existing Query Agent before the pipeline continues:
+models before reaching the BI layer.
 
-Natural language interpretation → Groq
-Structured plan → validation
-Business data → Monday.com
-Calculations → deterministic BI Agent
+This separates Monday-specific column structures from business logic and allows the analytical layer to operate on consistent objects.
 
-If Groq is unavailable, times out, or returns malformed or unsupported output, the existing deterministic query-understanding implementation is used as a fallback. This preserves reliability, avoids API-key dependency for baseline operation, and ensures the LLM never calculates metrics or sees Monday.com data.
+### Financial values
+
+Financial values are treated as analytical values supplied by the connected Monday.com boards.
+
+The system aggregates and compares these values but does not invent missing financial information.
 
 ---
 
-## 2. Key Trade-offs
+## 3. Query Understanding Approach
 
-### Deterministic rules vs. LLM-based interpretation
+### Groq LLM for natural-language interpretation
 
-The prototype uses rule-based intent classification and entity extraction.
+Groq is used to improve natural-language query understanding.
 
-**Why:**
+The LLM receives:
 
-- No external model/API dependency.
-- Predictable results.
-- Easier to test.
-- Lower operational cost.
-- Suitable for a constrained business-question vocabulary.
+- the user's question
+- the allowed intents
+- allowed datasets
+- allowed metrics
+- allowed filters
+- allowed grouping dimensions
 
-**Trade-off:**
-Natural-language flexibility is lower than a production LLM-powered system.
+It returns a structured JSON query plan.
 
-With more time, an LLM could be introduced behind the same query-agent interface while retaining deterministic validation and safety checks.
+The plan can contain:
 
-### Read-only integration vs. write-back automation
+- intent
+- datasets
+- filters
+- date range
+- metrics
+- grouping
+- sorting
+- confidence
+- clarification state
+
+### LLM does not calculate business metrics
+
+A key architectural decision was to separate interpretation from computation.
+
+The LLM is responsible for:
+
+> Understanding what the user is asking.
+
+The deterministic BI layer is responsible for:
+
+> Calculating the actual business metrics from Monday.com data.
+
+This reduces the risk of hallucinated financial numbers and makes calculations reproducible.
+
+### Validation boundary
+
+LLM output is treated as untrusted input.
+
+The validation layer checks:
+
+- supported intents
+- supported datasets
+- supported metrics
+- supported filters
+- supported grouping
+- valid confidence values
+- valid sorting
+- valid limits
+- valid clarification state
+- valid date ranges
+
+Invalid plans are rejected and the system can fall back to deterministic query understanding.
+
+---
+
+## 4. Key Trade-offs
+
+### LLM flexibility vs. deterministic reliability
+
+Using an LLM provides significantly better natural-language interpretation than a purely rule-based system.
+
+However, allowing the LLM to directly calculate business results would introduce unnecessary risk.
+
+Therefore, the system uses:
+
+**LLM → Query Plan → Validation → Deterministic BI**
+
+rather than:
+
+**LLM → Business Answer**
+
+This provides greater flexibility while keeping business calculations transparent.
+
+### Read-only integration vs. write automation
 
 The Monday.com integration is intentionally read-only.
 
-**Why:**
-The assignment requires business intelligence and decision support, not operational automation. Read-only access reduces the risk of accidentally modifying production business data.
+This was chosen because the assignment focuses on business intelligence and decision support rather than operational automation.
 
-### Founder-level summaries vs. detailed BI dashboards
+Read-only access also minimizes the risk of modifying production business records.
 
-The UI prioritizes a small number of high-value metrics rather than exposing every available field.
+### Founder-level summaries vs. complete data exploration
 
-The goal is to answer questions such as:
+The interface prioritizes high-value executive metrics and insights rather than exposing every raw Monday.com field.
 
-- How is the pipeline looking?
-- Which sector has the strongest pipeline?
-- What is outstanding in receivables?
-- What should leadership be concerned about?
-
-This keeps the interface focused on decision-making rather than data exploration.
+The goal is to help leadership answer questions quickly rather than reproduce a complete BI dashboard.
 
 ---
 
-## 3. Interpretation of "Leadership Updates"
+## 5. Data Resilience Decisions
 
-A leadership update was interpreted as a concise executive-level summary combining:
+The system is designed to tolerate incomplete and inconsistent source data.
 
-1. Sales pipeline health
-2. Weighted pipeline
-3. Operational workload
-4. Billing/collection position
-5. Financial risks requiring attention
+The mapping and validation layers handle:
 
-The prototype therefore combines Deal and Work Order metrics for leadership-oriented questions and surfaces insights and risks rather than returning raw records.
+- missing values
+- null values
+- empty Monday.com fields
+- inconsistent date formats
+- numeric formatting
+- currency symbols
+- percentage symbols
+- alternative column names
+- missing optional fields
 
-For example, a leadership update can highlight:
+When information is unavailable, the system avoids inventing values and can surface caveats or return `N/A`.
 
-- Total pipeline value
+### Column-name normalization
+
+Monday.com column titles can vary between boards.
+
+The mapper therefore supports aliases and normalized column-name matching.
+
+For example, business fields may have multiple Monday representations while still mapping to one canonical model field.
+
+### LLM resilience
+
+Malformed LLM output is rejected rather than passed directly into the BI layer.
+
+This prevents unsupported metrics, filters, or datasets from reaching deterministic business calculations.
+
+---
+
+## 6. Cross-Board Analysis
+
+The system supports questions requiring information from both Deals and Work Orders.
+
+For example:
+
+> "Compare our sales pipeline with work order execution."
+
+The query planner can identify both datasets.
+
+The BI layer then calculates metrics from:
+
+- Deals
+- Work Orders
+
+without requiring the LLM to see or calculate the underlying business records.
+
+---
+
+## 7. Interpretation of "Leadership Updates"
+
+"Leadership update" was interpreted as a concise executive-level summary of the current business position.
+
+The summary can combine:
+
+### Sales
+
+- Deal count
+- Pipeline value
 - Weighted pipeline
-- Number of active deals
-- Work-order volume
-- Billing position
+- Pipeline concentration
+
+### Operations
+
+- Work-order count
+- Execution-related metrics
+
+### Financial position
+
+- Billed value
+- Amount to be billed
+- Collected value when available
 - Outstanding receivables
-- Areas requiring leadership attention
 
----
-
-## 4. Resilience and Data Quality
-
-The system was designed to tolerate incomplete or inconsistent source data.
+### Risks
 
 Examples include:
 
-- Missing numeric values
-- Missing dates
-- Empty Monday.com fields
-- Different column naming conventions
-- Nullable financial fields
-- Unrecognized natural-language questions
+- high outstanding receivables
+- low weighted pipeline relative to total pipeline
+- operational or billing concerns
+- concentration in particular business sectors
 
-The mapping layer performs defensive parsing before data reaches the BI layer.
-
-This prevents source-data irregularities from directly causing failures in business analysis.
+The intent is to surface information that could require leadership attention rather than simply returning raw rows.
 
 ---
 
-## 5. What I Would Do Differently With More Time
+## 8. Security and Access Decisions
 
-### LLM-powered natural-language understanding
+The prototype uses:
 
-Introduce an LLM behind the existing query-agent abstraction for more flexible questions while retaining deterministic validation.
+- read-only Monday.com access
+- environment variables for local secrets
+- Streamlit Secrets for hosted deployment
+- Groq API credentials stored outside source code
+
+Actual API keys are not committed to the GitHub repository.
+
+The Groq query-planning layer receives the user's business question and the allowed query vocabulary rather than the complete Monday.com business dataset.
+
+---
+
+## 9. What Would Be Improved With More Time
 
 ### More advanced analytics
 
-Add:
+Future versions could add:
 
-- Trend analysis
-- Period-over-period comparisons
-- Forecasting
-- Deal aging
-- Pipeline conversion analysis
-- Sector benchmarking
-- Receivables aging
-- Anomaly detection
+- historical trend analysis
+- month-over-month and quarter-over-quarter comparisons
+- pipeline conversion analysis
+- deal aging
+- forecasting
+- sector benchmarking
+- receivables aging
+- anomaly detection
+
+### Better entity resolution
+
+Cross-board relationships could be strengthened through more sophisticated entity resolution between:
+
+- Deal names
+- Work-order names
+- Client identifiers
+- Owner identifiers
 
 ### Richer visualizations
 
-Add charts for:
+The prototype could be extended with:
 
-- Pipeline by sector
-- Pipeline by stage
-- Monthly pipeline movement
-- Billing vs. collection
-- Receivables aging
-- Work-order status
+- pipeline by sector
+- pipeline by stage
+- billing vs. collection trends
+- receivables aging
+- work-order execution status
+- historical pipeline movement
 
 ### Production observability
 
-Add structured logging, request tracing, performance metrics, and monitoring for the deployed application.
+A production implementation should include:
 
-### Authentication and access control
+- structured logging
+- request tracing
+- API latency monitoring
+- error monitoring
+- model usage monitoring
+- caching and rate-limit handling
 
-A production version would integrate authentication and role-based access control so that sensitive business information is only visible to authorized users.
+### Authentication and authorization
+
+A production deployment should include authentication and role-based access control so that sensitive business information is only available to authorized users.
 
 ---
 
-## 6. Final Design Principle
+## 10. Current Scope
 
-The prototype prioritizes:
+The prototype intentionally focuses on the required business intelligence workflow:
 
-**Reliable business answers → transparent calculations → safe data access → simple executive UX**
-
-rather than maximizing model complexity.
-
-This makes the prototype suitable for demonstrating the core concept while providing a clear path toward a production-grade BI agent.
+```text
+Natural-language question
+        ↓
+Groq query understanding
+        ↓
+Validated query plan
+        ↓
+Dynamic Monday.com retrieval
+        ↓
+Canonical business models
+        ↓
+Deterministic BI calculations
+        ↓
+Insights and risk detection
+        ↓
+Founder-level response

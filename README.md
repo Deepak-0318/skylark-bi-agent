@@ -27,6 +27,28 @@ It includes:
 - Dataset analysis documentation
 - Automated tests
 
+### Phase 2 — Monday.com Integration
+
+**Status: Complete**
+
+Phase 2 provides the read-only Monday.com integration layer that later
+agents will consume.
+
+It includes:
+
+- Monday GraphQL API client
+- Board discovery
+- Schema retrieval
+- Dynamic item retrieval
+- Cursor-based pagination
+- Controlled Monday-specific errors
+- Canonical Deals and Work Orders mapping
+- Record-level reconciliation
+- Read-only service boundary
+
+See [docs/MONDAY_INTEGRATION.md](docs/MONDAY_INTEGRATION.md) for setup,
+architecture, mapping, reconciliation, and the read-only guarantee.
+
 ## Dataset Summary
 
 | Dataset | Records | Columns |

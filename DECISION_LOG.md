@@ -1,90 +1,144 @@
-# Skylark Drones — Decision Log
+# Skylark BI Agent — Decision Log
 
-## 1. Architecture
+## 1. Key Assumptions
 
-The system is divided into specialized capabilities:
+### Monday.com as the system of record
+The solution assumes that Monday.com is the primary source of truth for business data. The prototype reads the Deals and Work Orders boards in read-only mode and does not modify Monday.com data.
 
-- Monday Integration Agent
-- Data Resilience Agent
-- Query Understanding Agent
-- Business Intelligence Agent
-- Final Orchestrator
+### Two primary business datasets
+The prototype focuses on two datasets:
+- Deals — sales pipeline and opportunity information.
+- Work Orders — operational, billing, collection, and receivables information.
 
-The separation allows deterministic analytics to remain independent from
-LLM-based interpretation and response generation.
+These datasets were sufficient to answer the required founder-level business questions.
 
-## 2. Data Source
+### Canonical data models
+Monday.com records are mapped into canonical `Deal` and `WorkOrder` models before analysis. This separates Monday-specific schemas from the business intelligence layer and makes the analytical logic independent of the source representation.
 
-The supplied CSV exports are used only for development and dataset
-understanding.
+### Deterministic query understanding
+The prototype uses a deterministic query-understanding layer rather than depending on an external LLM API. This was an intentional choice for reliability, reproducibility, and avoiding API-key dependency during evaluation.
 
-The production agent will query Monday.com dynamically and will not hardcode
-the supplied business data.
+---
 
-## 3. Missing Data
+## 2. Key Trade-offs
 
-Missing values are not automatically imputed unless there is a defensible
-business rule.
+### Deterministic rules vs. LLM-based interpretation
 
-The agent should explicitly communicate important data-quality limitations.
+The prototype uses rule-based intent classification and entity extraction.
 
-## 4. Closure Probability
+**Why:**
+- No external model/API dependency.
+- Predictable results.
+- Easier to test.
+- Lower operational cost.
+- Suitable for a constrained business-question vocabulary.
 
-The Closure Probability field contains qualitative values:
+**Trade-off:**
+Natural-language flexibility is lower than a production LLM-powered system.
 
-- High
-- Medium
-- Low
+With more time, an LLM could be introduced behind the same query-agent interface while retaining deterministic validation and safety checks.
 
-No numerical probability mapping is assumed because the dataset does not
-provide an explicit mapping.
+### Read-only integration vs. write-back automation
 
-## 5. Cross-board Relationships
+The Monday.com integration is intentionally read-only.
 
-Deal Name ↔ Deal name masked is treated as a candidate record-level
-relationship because normalized values show strong overlap.
+**Why:**
+The assignment requires business intelligence and decision support, not operational automation. Read-only access reduces the risk of accidentally modifying production business data.
 
-Owner code ↔ BD/KAM Personnel code is treated as a shared owner dimension.
+### Founder-level summaries vs. detailed BI dashboards
 
-Sector/service ↔ Sector is treated as a shared analytical dimension.
+The UI prioritizes a small number of high-value metrics rather than exposing every available field.
 
-Client Code ↔ Customer Name Code is explicitly not used as a join because
-the supplied datasets have no observed normalized overlap.
+The goal is to answer questions such as:
+- How is the pipeline looking?
+- Which sector has the strongest pipeline?
+- What is outstanding in receivables?
+- What should leadership be concerned about?
 
-## 6. Duplicate Records
+This keeps the interface focused on decision-making rather than data exploration.
 
-Duplicate Deals are flagged rather than blindly deleted.
+---
 
-A repeated Deal Name is not automatically considered a duplicate because
-multiple business records may legitimately share a name.
+## 3. Interpretation of "Leadership Updates"
 
-## 7. Financial Values
+A leadership update was interpreted as a concise executive-level summary combining:
 
-Financial fields are masked/anonymized in the supplied data. The system can
-perform aggregation and comparison on the supplied values but should not
-claim that they represent identifiable real-world monetary amounts.
+1. Sales pipeline health
+2. Weighted pipeline
+3. Operational workload
+4. Billing/collection position
+5. Financial risks requiring attention
 
-## 8. Leadership Updates
+The prototype therefore combines Deal and Work Order metrics for leadership-oriented questions and surfaces insights and risks rather than returning raw records.
 
-"Leadership updates" is interpreted as concise executive summaries containing:
+For example, a leadership update can highlight:
+- Total pipeline value
+- Weighted pipeline
+- Number of active deals
+- Work-order volume
+- Billing position
+- Outstanding receivables
+- Areas requiring leadership attention
 
-- Key metrics
-- Major trends
-- Risks
-- Data-quality caveats
-- Important changes
-- Recommended areas of attention
+---
 
-The output should prioritize business implications over raw rows.
+## 4. Resilience and Data Quality
 
-## 9. What Would Be Improved With More Time
+The system was designed to tolerate incomplete or inconsistent source data.
 
-With additional time:
+Examples include:
+- Missing numeric values
+- Missing dates
+- Empty Monday.com fields
+- Different column naming conventions
+- Nullable financial fields
+- Unrecognized natural-language questions
 
-- Establish stronger entity resolution between boards.
-- Add historical trend analysis.
-- Add automated anomaly detection.
-- Add configurable business definitions for metrics.
-- Add richer visualization.
-- Add caching and observability around Monday API calls.
-- Add evaluation datasets for agent accuracy.
+The mapping layer performs defensive parsing before data reaches the BI layer.
+
+This prevents source-data irregularities from directly causing failures in business analysis.
+
+---
+
+## 5. What I Would Do Differently With More Time
+
+### LLM-powered natural-language understanding
+Introduce an LLM behind the existing query-agent abstraction for more flexible questions while retaining deterministic validation.
+
+### More advanced analytics
+Add:
+- Trend analysis
+- Period-over-period comparisons
+- Forecasting
+- Deal aging
+- Pipeline conversion analysis
+- Sector benchmarking
+- Receivables aging
+- Anomaly detection
+
+### Richer visualizations
+Add charts for:
+- Pipeline by sector
+- Pipeline by stage
+- Monthly pipeline movement
+- Billing vs. collection
+- Receivables aging
+- Work-order status
+
+### Production observability
+Add structured logging, request tracing, performance metrics, and monitoring for the deployed application.
+
+### Authentication and access control
+A production version would integrate authentication and role-based access control so that sensitive business information is only visible to authorized users.
+
+---
+
+## 6. Final Design Principle
+
+The prototype prioritizes:
+
+**Reliable business answers → transparent calculations → safe data access → simple executive UX**
+
+rather than maximizing model complexity.
+
+This makes the prototype suitable for demonstrating the core concept while providing a clear path toward a production-grade BI agent.

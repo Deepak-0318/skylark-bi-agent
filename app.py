@@ -5,6 +5,7 @@ import sys
 
 import streamlit as st
 
+
 # ------------------------------------------------------------------
 # Project path
 # ------------------------------------------------------------------
@@ -15,21 +16,9 @@ SRC = os.path.join(ROOT, "src")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-# ------------------------------------------------------------------
-# Imports
-# ------------------------------------------------------------------
-
-from skylark_bi.agents.monday_agent import MondayIntegrationService
-from skylark_bi.agents.query_agent import QueryUnderstandingService
-from skylark_bi.agents.bi_agent import BIAgentService
-from skylark_bi.agents.orchestrator import OrchestratorService
-from skylark_bi.agents.monday_agent.mapper import (
-    map_deal,
-    map_work_order,
-)
 
 # ------------------------------------------------------------------
-# Page
+# Page configuration
 # ------------------------------------------------------------------
 
 st.set_page_config(
@@ -38,12 +27,44 @@ st.set_page_config(
     layout="wide",
 )
 
+
+# ------------------------------------------------------------------
+# Streamlit Secrets → Environment Variables
+# ------------------------------------------------------------------
+
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+
+if "GROQ_MODEL" in st.secrets:
+    os.environ["GROQ_MODEL"] = st.secrets["GROQ_MODEL"]
+
+
+# ------------------------------------------------------------------
+# Imports
+# ------------------------------------------------------------------
+
+from skylark_bi.agents.monday_agent import MondayIntegrationService
+from skylark_bi.agents.query_agent import QueryUnderstandingService
+from skylark_bi.agents.bi_agent import BIAgentService
+
+from skylark_bi.agents.monday_agent.mapper import (
+    map_deal,
+    map_work_order,
+)
+
+
+# ------------------------------------------------------------------
+# Header
+# ------------------------------------------------------------------
+
 st.title("🚁 Skylark BI Agent")
+
 st.caption(
     "Founder-level business intelligence powered by monday.com"
 )
 
 st.divider()
+
 
 # ------------------------------------------------------------------
 # Services
@@ -51,26 +72,26 @@ st.divider()
 
 @st.cache_resource
 def get_services():
+
     monday = MondayIntegrationService()
+
     query = QueryUnderstandingService()
+
     bi = BIAgentService()
 
-    try:
-        orchestrator = OrchestratorService(
-            monday=monday,
-            query=query,
-            bi=bi,
-        )
-    except TypeError:
-        orchestrator = None
-
-    return monday, query, bi, orchestrator
+    return monday, query, bi
 
 
 try:
-    monday, query_service, bi_service, orchestrator = get_services()
+
+    monday, query_service, bi_service = get_services()
+
 except Exception as exc:
-    st.error(f"Unable to connect to monday.com: {exc}")
+
+    st.error(
+        f"Unable to connect to monday.com: {exc}"
+    )
+
     st.stop()
 
 
@@ -80,6 +101,7 @@ except Exception as exc:
 
 @st.cache_data(ttl=300)
 def load_data():
+
     deals_board = monday.reader.read_board(
         monday.config.deals_board_id
     )
@@ -89,12 +111,18 @@ def load_data():
     )
 
     deals = [
-        map_deal(item, deals_board)
+        map_deal(
+            item,
+            deals_board.board,
+        )
         for item in deals_board.items
     ]
 
     work_orders = [
-        map_work_order(item, work_orders_board)
+        map_work_order(
+            item,
+            work_orders_board.board,
+        )
         for item in work_orders_board.items
     ]
 
@@ -102,9 +130,15 @@ def load_data():
 
 
 try:
+
     deals, work_orders = load_data()
+
 except Exception as exc:
-    st.error(f"Unable to load monday.com data: {exc}")
+
+    st.error(
+        f"Unable to load monday.com data: {exc}"
+    )
+
     st.stop()
 
 
@@ -113,6 +147,7 @@ except Exception as exc:
 # ------------------------------------------------------------------
 
 with st.sidebar:
+
     st.header("Data Sources")
 
     st.success("Monday.com connected")
@@ -128,44 +163,89 @@ with st.sidebar:
     )
 
     if st.button("Refresh Data"):
+
         load_data.clear()
+
         st.rerun()
 
 
 # ------------------------------------------------------------------
-# Query
+# Query section
 # ------------------------------------------------------------------
 
 st.subheader("Ask a business question")
+
 
 examples = [
     "How is our pipeline looking?",
     "How is the mining sector pipeline?",
     "What is our outstanding receivable?",
+    "Compare our sales pipeline with work order execution.",
+    "Where should leadership focus?",
     "Give me a leadership update.",
 ]
+
 
 selected = st.selectbox(
     "Example questions",
     ["Custom question"] + examples,
 )
 
+
 if selected == "Custom question":
+
     question = st.text_input(
         "Business question",
-        placeholder="Ask about pipeline, revenue, sectors, receivables, or operations...",
+        placeholder=(
+            "Ask about pipeline, revenue, sectors, "
+            "receivables, work orders, or leadership..."
+        ),
     )
+
 else:
+
     question = selected
 
-if st.button("Analyze", type="primary") and question.strip():
 
-    with st.spinner("Analyzing monday.com data..."):
+# ------------------------------------------------------------------
+# Analysis
+# ------------------------------------------------------------------
+
+if st.button(
+    "Analyze",
+    type="primary",
+) and question.strip():
+
+    with st.spinner(
+        "Analyzing monday.com data..."
+    ):
 
         try:
+
+            # ------------------------------------------------------
+            # 1. Understand query using Groq
+            # ------------------------------------------------------
+
             plan = query_service.understand(
                 question
             )
+
+            # ------------------------------------------------------
+            # 2. Handle clarification
+            # ------------------------------------------------------
+
+            if plan.clarification_required:
+
+                st.warning(
+                    plan.clarification_question
+                    or "Could you clarify your question?"
+                )
+
+                st.stop()
+
+            # ------------------------------------------------------
+            # 3. Deterministic BI analysis
+            # ------------------------------------------------------
 
             result = bi_service.analyze(
                 plan,
@@ -174,79 +254,133 @@ if st.button("Analyze", type="primary") and question.strip():
             )
 
         except Exception as exc:
+
             st.error(
                 f"Unable to analyze the question: {exc}"
             )
+
             st.stop()
 
+
     # --------------------------------------------------------------
-    # Answer
+    # Business Answer
     # --------------------------------------------------------------
 
     st.divider()
 
     st.subheader("Business Answer")
 
+
+    # --------------------------------------------------------------
+    # Headline metrics
+    # --------------------------------------------------------------
+
     if result.metrics:
 
-        columns = st.columns(
-            min(len(result.metrics), 4)
-        )
+        metric_items = [
+            (key, value)
+            for key, value in result.metrics.items()
+            if value is not None
+        ]
 
-        for column, (key, value) in zip(
-            columns,
-            result.metrics.items(),
-        ):
-            if isinstance(value, float):
-                if "value" in key or "amount" in key:
-                    display = f"₹{value:,.2f}"
-                else:
-                    display = f"{value:,.2f}"
-            elif value is None:
-                display = "N/A"
-            else:
-                display = str(value)
+        if metric_items:
 
-            column.metric(
-                key.replace("_", " ").title(),
-                display,
+            columns = st.columns(
+                min(len(metric_items), 4)
             )
+
+            for column, (key, value) in zip(
+                columns,
+                metric_items,
+            ):
+
+                if isinstance(value, float):
+
+                    if (
+                        "value" in key
+                        or "amount" in key
+                        or "pipeline" in key
+                    ):
+
+                        display = (
+                            f"₹{value:,.2f}"
+                        )
+
+                    else:
+
+                        display = (
+                            f"{value:,.2f}"
+                        )
+
+                elif value is None:
+
+                    display = "N/A"
+
+                else:
+
+                    display = str(value)
+
+                column.metric(
+                    key.replace(
+                        "_",
+                        " ",
+                    ).title(),
+                    display,
+                )
+
 
     # --------------------------------------------------------------
     # Insights
     # --------------------------------------------------------------
 
     if result.insights:
+
         st.subheader("Insights")
 
         for insight in result.insights:
+
             st.info(insight)
+
 
     # --------------------------------------------------------------
     # Risks
     # --------------------------------------------------------------
 
     if result.risks:
-        st.subheader("Risks / Attention")
+
+        st.subheader(
+            "Risks / Attention"
+        )
 
         for risk in result.risks:
+
             st.warning(risk)
+
 
     # --------------------------------------------------------------
     # Caveats
     # --------------------------------------------------------------
 
     if result.caveats:
-        st.subheader("Data Quality / Caveats")
+
+        st.subheader(
+            "Data Quality / Caveats"
+        )
 
         for caveat in result.caveats:
-            st.caption(f"⚠️ {caveat}")
+
+            st.caption(
+                f"⚠️ {caveat}"
+            )
+
 
     # --------------------------------------------------------------
     # Query interpretation
     # --------------------------------------------------------------
 
-    with st.expander("Query interpretation"):
+    with st.expander(
+        "Query interpretation"
+    ):
 
         st.write(
             {
@@ -259,7 +393,9 @@ if st.button("Analyze", type="primary") and question.strip():
             }
         )
 
+
 else:
+
     st.info(
         "Ask a founder-level business question to begin."
     )

@@ -1,132 +1,32 @@
-"""
-Executive response generation.
+def _fmt(value):
+    if value is None:
+        return None
 
-Groq is used only to turn validated BI results into a concise
-founder-level explanation. Business calculations remain deterministic.
-"""
+    if isinstance(value, float):
+        return f"{value:,.2f}"
 
-from __future__ import annotations
-
-import json
-import os
-from typing import Any
-
-from .schemas import FinalAnswer
+    return f"{value:,}" if isinstance(value, int) else str(value)
 
 
-DEFAULT_MODEL = "openai/gpt-oss-20b"
-
-
-class GroqResponseClient:
-    """Generate concise executive responses from validated BI results."""
-
-    def __init__(
-        self,
-        api_key: str,
-        model: str = DEFAULT_MODEL,
-    ) -> None:
-        if not api_key:
-            raise ValueError("GROQ_API_KEY is not configured.")
-
-        from groq import Groq
-
-        self.client = Groq(api_key=api_key, timeout=30)
-        self.model = model
-
-    @classmethod
-    def from_environment(cls):
-        api_key = os.getenv("GROQ_API_KEY")
-
-        if not api_key or api_key == "YOUR_GROQ_API_KEY":
-            return None
-
-        return cls(
-            api_key=api_key,
-            model=os.getenv("GROQ_MODEL", DEFAULT_MODEL),
-        )
-
-    def generate(
-        self,
-        query: str,
-        intent: str,
-        metrics: dict[str, Any],
-        insights: list[str],
-        risks: list[str],
-        caveats: list[str],
-    ) -> str:
-
-        payload = {
-            "query": query,
-            "intent": intent,
-            "metrics": metrics,
-            "insights": insights,
-            "risks": risks,
-            "caveats": caveats,
-        }
-
-        prompt = (
-            "Write a concise founder-level business intelligence answer.\n\n"
-            "Rules:\n"
-            "1. Use ONLY the supplied metrics, insights, risks and caveats.\n"
-            "2. Never invent or estimate numbers.\n"
-            "3. Do not perform new calculations.\n"
-            "4. Clearly explain the business implication.\n"
-            "5. Mention important risks.\n"
-            "6. Mention caveats when present.\n"
-            "7. Keep the answer under 180 words.\n"
-            "8. Use simple professional language.\n"
-            "9. Do not mention Groq, LLMs, agents, prompts or internal systems.\n\n"
-            f"Validated BI result:\n{json.dumps(payload, default=str)}"
-        )
-
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a concise founder-level business "
-                        "intelligence assistant."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
-            ],
-            temperature=0.1,
-            max_tokens=300,
-        )
-
-        content = response.choices[0].message.content
-
-        if not isinstance(content, str) or not content.strip():
-            raise ValueError("Groq returned an empty response.")
-
-        return content.strip()
-
-
-def _deterministic_answer(plan, result) -> str:
-    """Safe fallback when LLM response generation is unavailable."""
-
+def format_answer(plan, result):
     if not result.metrics and result.caveats:
         return "I couldn't find enough usable data to answer this query."
 
     if plan.intent == "leadership_update":
         return _leadership(result)
 
+    if plan.intent == "cross_board_analysis":
+        return _cross_board(result)
+
     parts = []
 
     for key, value in result.metrics.items():
-        if value is None:
-            continue
+        formatted = _fmt(value)
 
-        label = key.replace("_", " ").title()
-
-        if isinstance(value, float):
-            parts.append(f"{label}: {value:,.2f}")
-        else:
-            parts.append(f"{label}: {value}")
+        if formatted is not None:
+            parts.append(
+                f"{key.replace('_', ' ').title()}: {formatted}"
+            )
 
     if result.insights:
         parts.append("\nKey insights:")
@@ -143,17 +43,82 @@ def _deterministic_answer(plan, result) -> str:
     return "\n".join(parts) or "No usable metrics were found."
 
 
+def _cross_board(result):
+    m = result.metrics
+
+    deal_count = m.get("deal_count")
+    pipeline = m.get("pipeline_value")
+    weighted = m.get("weighted_pipeline")
+    work_orders = m.get("work_order_count")
+    billed = m.get("billed_value")
+    receivable = m.get("amount_receivable")
+
+    lines = ["Sales vs Operations"]
+
+    if deal_count is not None and pipeline is not None:
+        lines.append(
+            f"- Sales pipeline: {deal_count:,} deals worth "
+            f"{_fmt(pipeline)}."
+        )
+
+    if weighted is not None and pipeline:
+        percentage = weighted / pipeline * 100
+        lines.append(
+            f"- Weighted pipeline: {_fmt(weighted)} "
+            f"({percentage:.1f}% of total pipeline)."
+        )
+
+    if work_orders is not None:
+        lines.append(
+            f"- Operational workload: {work_orders:,} work orders."
+        )
+
+    if billed is not None:
+        lines.append(
+            f"- Billed value: {_fmt(billed)}."
+        )
+
+    if receivable is not None:
+        lines.append(
+            f"- Outstanding receivables: {_fmt(receivable)}."
+        )
+
+    lines.append("\nLeadership takeaway:")
+
+    if receivable:
+        lines.append(
+            "The immediate financial attention area is collections, "
+            "while the sales pipeline provides a substantially larger "
+            "future opportunity than the current operational workload."
+        )
+    else:
+        lines.append(
+            "Sales opportunity and operational execution should be "
+            "monitored together to ensure pipeline conversion keeps pace "
+            "with delivery capacity."
+        )
+
+    if result.insights:
+        lines.append("\nKey insights:")
+        lines.extend(f"- {x}" for x in result.insights)
+
+    if result.risks:
+        lines.append("\nRisks:")
+        lines.extend(f"- {x}" for x in result.risks)
+
+    return "\n".join(lines)
+
+
 def _leadership(result):
     lines = ["Leadership Summary"]
 
     for key, value in result.metrics.items():
-        if value is not None:
-            label = key.replace("_", " ").title()
+        formatted = _fmt(value)
 
-            if isinstance(value, float):
-                lines.append(f"- {label}: {value:,.2f}")
-            else:
-                lines.append(f"- {label}: {value}")
+        if formatted is not None:
+            lines.append(
+                f"- {key.replace('_', ' ').title()}: {formatted}"
+            )
 
     if result.insights:
         lines.append("\nKey insights:")
@@ -168,26 +133,3 @@ def _leadership(result):
         lines.extend(f"- {x}" for x in result.caveats)
 
     return "\n".join(lines)
-
-
-def format_answer(plan, result, llm_client=None) -> str:
-    """
-    Generate an executive answer using Groq when available.
-
-    Deterministic formatting remains the fallback.
-    """
-
-    if llm_client is not None:
-        try:
-            return llm_client.generate(
-                query=plan.original_query,
-                intent=plan.intent,
-                metrics=result.metrics,
-                insights=result.insights,
-                risks=result.risks,
-                caveats=result.caveats,
-            )
-        except Exception:
-            pass
-
-    return _deterministic_answer(plan, result)
